@@ -7,6 +7,7 @@ import domain.exception.EntityNotFoundException;
 import domain.exception.ValidationException;
 import domain.repository.IContactRepository;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 /**
@@ -15,6 +16,14 @@ import java.util.List;
  * domain jika operasi tidak valid atau data tidak ditemukan.
  */
 public class ContactUseCase {
+    /** Nomor telepon: angka, boleh diawali "+", boleh memuat spasi atau tanda hubung (6-20 karakter). */
+    private static final Pattern PHONE_PATTERN = Pattern.compile("^\\+?[0-9][0-9\\- ]{4,18}[0-9]$");
+
+
+    /** Email: bagian lokal, "@", lalu domain yang memuat titik (tanpa spasi). */
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.+\\-]+@[\\w\\-]+(\\.[\\w\\-]+)+$");
+
+
     /** Port repository yang di-inject dari luar (Dependency Inversion). */
     private final IContactRepository contactRepository;
 
@@ -58,7 +67,6 @@ public class ContactUseCase {
         if (email != null) {
             validateNotBlank(email, "Email tidak boleh kosong!");
         }
-
         if (name != null) {
             contact.changeName(name.trim());
         }
@@ -94,6 +102,22 @@ public class ContactUseCase {
         return contactRepository.findAll().stream()
                 .sorted(option.comparator())
                 .toList();
+    }
+
+
+    /** Aturan validasi: nomor telepon harus berformat angka yang wajar. */
+    private void validatePhone(String phone) throws ValidationException {
+        if (!PHONE_PATTERN.matcher(phone.trim()).matches()) {
+            throw new ValidationException("Format nomor telepon tidak valid!");
+        }
+    }
+
+
+    /** Aturan validasi: email harus berformat nama@domain.tld. */
+    private void validateEmail(String email) throws ValidationException {
+        if (!EMAIL_PATTERN.matcher(email.trim()).matches()) {
+            throw new ValidationException("Format email tidak valid!");
+        }
     }
 
 

@@ -4,7 +4,8 @@ package domain.entity;
 /**
  * Entity inti yang merepresentasikan satu transaksi keuangan.
  * Berada di layer domain — tidak bergantung pada layer lain dan bebas dari
- * urusan tampilan maupun penyimpanan.
+ * urusan tampilan maupun penyimpanan. Bersifat immutable: seluruh field final,
+ * sehingga data transaksi yang sudah dicatat tidak dapat diubah dari luar.
  */
 public class Transaction {
     /** ID unik transaksi, tidak boleh diubah setelah dibuat. */
@@ -12,11 +13,11 @@ public class Transaction {
 
 
     /** Keterangan transaksi. */
-    private String description;
+    private final String description;
 
 
     /** Jumlah uang (selalu bernilai positif). */
-    private long amount;
+    private final long amount;
 
 
     /** Jenis transaksi: pemasukan atau pengeluaran. */
@@ -51,14 +52,9 @@ public class Transaction {
     }
 
 
-    /** Mengubah keterangan transaksi. */
-    public void changeDescription(String description) {
-        this.description = description;
+    /** Nilai transaksi terhadap saldo: positif untuk pemasukan, negatif untuk pengeluaran. */
+    public long signedAmount() {
+        return type == TransactionType.INCOME ? amount : -amount;
     }
 
-
-    /** Mengubah jumlah uang transaksi. */
-    public void changeAmount(long amount) {
-        this.amount = amount;
-    }
 }

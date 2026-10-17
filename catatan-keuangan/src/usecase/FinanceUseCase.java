@@ -72,15 +72,9 @@ public class FinanceUseCase {
 
     /** Menghitung saldo: total pemasukan dikurangi total pengeluaran. */
     public long getBalance() {
-        long balance = 0;
-        for (Transaction transaction : transactionRepository.findAll()) {
-            if (transaction.getType() == TransactionType.INCOME) {
-                balance += transaction.getAmount();
-            } else {
-                balance -= transaction.getAmount();
-            }
-        }
-        return balance;
+        return transactionRepository.findAll().stream()
+                .mapToLong(Transaction::signedAmount)
+                .sum();
     }
 
     /** Aturan validasi: teks tidak boleh null atau kosong. */
