@@ -35,7 +35,6 @@ public class ActivityUseCase {
         validateNotBlank(title, "Judul kegiatan tidak boleh kosong!");
         validateNotBlank(day, "Hari kegiatan tidak boleh kosong!");
         validateNotBlank(time, "Waktu kegiatan tidak boleh kosong!");
-        validateNotDuplicate(null, title.trim(), day.trim(), time.trim());
         return activityRepository.save(title.trim(), day.trim(), time.trim());
     }
 
@@ -59,23 +58,20 @@ public class ActivityUseCase {
         if (time != null) {
             validateNotBlank(time, "Waktu kegiatan tidak boleh kosong!");
         }
-        // Cek duplikasi terhadap kegiatan lain berdasarkan nilai akhir setelah perubahan
-        validateNotDuplicate(id,
-                title != null ? title.trim() : activity.getTitle(),
-                day != null ? day.trim() : activity.getDay(),
-                time != null ? time.trim() : activity.getTime());
 
+        // Entity immutable: setiap perubahan menghasilkan objek baru
+        Activity updated = activity;
         if (title != null) {
-            activity.changeTitle(title.trim());
+            updated = updated.withTitle(title.trim());
         }
         if (day != null) {
-            activity.changeDay(day.trim());
+            updated = updated.withDay(day.trim());
         }
         if (time != null) {
-            activity.changeTime(time.trim());
+            updated = updated.withTime(time.trim());
         }
 
-        activityRepository.update(activity);
+        activityRepository.update(updated);
     }
 
 
@@ -101,23 +97,6 @@ public class ActivityUseCase {
         return activityRepository.findAll().stream()
                 .sorted(option.comparator())
                 .toList();
-    }
-
-
-    /**
-     * Aturan validasi: kegiatan dengan judul, hari, dan waktu yang sama (case-insensitive) tidak boleh ganda.
-     *
-     * @param ownId ID kegiatan yang sedang diubah (dikecualikan), atau null saat menambah
-     */
-    private void validateNotDuplicate(Integer ownId, String title, String day, String time)
-            throws ValidationException {
-        boolean exists = !activityRepository.findBy(a -> (ownId == null || a.getId() != ownId)
-                && a.getTitle().equalsIgnoreCase(title)
-                && a.getDay().equalsIgnoreCase(day)
-                && a.getTime().equalsIgnoreCase(time)).isEmpty();
-        if (exists) {
-            throw new ValidationException("Kegiatan dengan judul, hari, dan waktu yang sama sudah ada!");
-        }
     }
 
 

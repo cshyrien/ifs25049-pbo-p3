@@ -4,7 +4,7 @@ Aplikasi konsol Java untuk mengelola daftar barang, stok, dan kategorinya. Diban
 
 ## Fitur
 
-- Tambah barang (validasi nama, stok > 0, kategori; tolak nama+kategori yang sudah ada)
+- Tambah barang (validasi nama, stok > 0, kategori)
 - Ubah stok barang (input kosong berarti stok tidak diubah, `x` membatalkan)
 - Cari barang berdasarkan nama (case-insensitive)
 - Urutkan: nama A-Z/Z-A, jumlah terkecil/terbesar
@@ -55,6 +55,7 @@ src/
 - **Generic Abstraction & Reuse**: `IRepository<T, ID>` dan `InMemoryRepository<T, ID>` dipakai ulang oleh repository spesifik.
 - **Structured Domain Exceptions**: `DomainException` (checked), `EntityNotFoundException`, dan `ValidationException`; kegagalan bisnis tidak memakai boolean return code.
 - **Enum dengan comparator sendiri**: `SortOption` (`NAME_ASC`, `NAME_DESC`, `QUANTITY_ASC`, `QUANTITY_DESC`); tiap opsi membawa `Comparator`-nya.
+- **Entity immutable**: seluruh field `final`; perubahan data memakai method `with*` yang mengembalikan objek baru (bukan setter/`change*`).
 - **Use case tanpa I/O**: semua tampilan dan input ada di layer framework.
 - **Presenter terpisah**: format output bukan tanggung jawab entity (entity tidak punya `toString()`).
 - **Port & Adapter**: interface di `domain`, implementasi di `adapter`.
@@ -66,6 +67,17 @@ src/
 javac -encoding UTF-8 -d output -sourcepath src src/App.java
 java -cp output App
 ```
+
+## Unit Test
+
+Test berada di `test/usecase/ItemUseCaseTest.java` (tanpa framework eksternal, cukup JDK). Dari folder studi kasus:
+
+```
+javac -encoding UTF-8 -d output -sourcepath "src;test" test/usecase/ItemUseCaseTest.java
+java -cp output usecase.ItemUseCaseTest
+```
+
+(Di Linux/macOS gunakan `src:test` pada `-sourcepath`.) Test mencakup validasi input, update parsial, exception `EntityNotFoundException`, pencarian, pengurutan, dan perilaku entity immutable.
 
 ## Catatan Desain: Duplikasi `InMemoryRepository` dan `InputUtil`
 

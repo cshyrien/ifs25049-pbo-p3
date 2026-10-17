@@ -21,7 +21,7 @@ public class ContactUseCase {
 
 
     /** Email: bagian lokal, "@", lalu domain yang memuat titik (tanpa spasi). */
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.+\\-]+@[\\w\\-]+(\\.[\\w\\-]+)+$");
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
 
     /** Port repository yang di-inject dari luar (Dependency Inversion). */
@@ -46,7 +46,6 @@ public class ContactUseCase {
         validateNotBlank(email, "Email tidak boleh kosong!");
         validatePhone(phone);
         validateEmail(email);
-        validateNotDuplicate(null, phone.trim(), email.trim());
         return contactRepository.save(name.trim(), phone.trim(), email.trim());
     }
 
@@ -76,22 +75,20 @@ public class ContactUseCase {
         if (email != null) {
             validateEmail(email);
         }
-        // Cek duplikasi terhadap kontak lain berdasarkan nilai telepon/email akhir
-        validateNotDuplicate(id,
-                phone != null ? phone.trim() : contact.getPhone(),
-                email != null ? email.trim() : contact.getEmail());
 
+        // Entity immutable: setiap perubahan menghasilkan objek baru
+        Contact updated = contact;
         if (name != null) {
-            contact.changeName(name.trim());
+            updated = updated.withName(name.trim());
         }
         if (phone != null) {
-            contact.changePhone(phone.trim());
+            updated = updated.withPhone(phone.trim());
         }
         if (email != null) {
-            contact.changeEmail(email.trim());
+            updated = updated.withEmail(email.trim());
         }
 
-        contactRepository.update(contact);
+        contactRepository.update(updated);
     }
 
 
@@ -132,31 +129,6 @@ public class ContactUseCase {
         if (!EMAIL_PATTERN.matcher(email.trim()).matches()) {
             throw new ValidationException("Format email tidak valid!");
         }
-    }
-
-
-    /**
-     * Aturan validasi: telepon dan email tidak boleh sama dengan kontak lain.
-     *
-     * @param ownId ID kontak yang sedang diubah (dikecualikan dari pengecekan), atau null saat menambah
-     */
-    private void validateNotDuplicate(Integer ownId, String phone, String email) throws ValidationException {
-        boolean phoneUsed = !contactRepository.findBy(
-                c -> isOtherContact(c, ownId) && c.getPhone().equals(phone)).isEmpty();
-        if (phoneUsed) {
-            throw new ValidationException("Nomor telepon sudah digunakan kontak lain!");
-        }
-        boolean emailUsed = !contactRepository.findBy(
-                c -> isOtherContact(c, ownId) && c.getEmail().equalsIgnoreCase(email)).isEmpty();
-        if (emailUsed) {
-            throw new ValidationException("Email sudah digunakan kontak lain!");
-        }
-    }
-
-
-    /** Kontak dianggap "lain" jika bukan kontak yang sedang diubah (ownId null = tambah baru). */
-    private boolean isOtherContact(Contact contact, Integer ownId) {
-        return ownId == null || contact.getId() != ownId;
     }
 
 

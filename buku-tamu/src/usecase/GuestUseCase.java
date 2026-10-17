@@ -33,13 +33,7 @@ public class GuestUseCase {
     public Guest registerGuest(String name, String purpose) throws ValidationException {
         validateNotBlank(name, "Nama tamu tidak boleh kosong!");
         validateNotBlank(purpose, "Tujuan kunjungan tidak boleh kosong!");
-
-        String cleanName = name.trim();
-        String cleanPurpose = purpose.trim();
-        if (isAlreadyRegistered(cleanName, cleanPurpose)) {
-            throw new ValidationException("Tamu dengan nama dan tujuan yang sama sudah terdaftar!");
-        }
-        return guestRepository.save(cleanName, cleanPurpose);
+        return guestRepository.save(name.trim(), purpose.trim());
     }
 
 
@@ -57,13 +51,6 @@ public class GuestUseCase {
             throw new EntityNotFoundException("Tamu", id);
         }
     }
-
-    /** Tamu dianggap terdaftar ganda jika nama dan tujuan kunjungannya sama (case-insensitive). */
-    private boolean isAlreadyRegistered(String name, String purpose) {
-        return !guestRepository.findBy(guest -> guest.getName().equalsIgnoreCase(name)
-                && guest.getPurpose().equalsIgnoreCase(purpose)).isEmpty();
-    }
-
 
     /** Aturan validasi: teks tidak boleh null atau kosong. */
     private void validateNotBlank(String value, String message) throws ValidationException {

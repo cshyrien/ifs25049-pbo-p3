@@ -68,6 +68,17 @@ javac -encoding UTF-8 -d output -sourcepath src src/App.java
 java -cp output App
 ```
 
+## Unit Test
+
+Test berada di `test/usecase/FinanceUseCaseTest.java` (tanpa framework eksternal, cukup JDK). Dari folder studi kasus:
+
+```
+javac -encoding UTF-8 -d output -sourcepath "src;test" test/usecase/FinanceUseCaseTest.java
+java -cp output usecase.FinanceUseCaseTest
+```
+
+(Di Linux/macOS gunakan `src:test` pada `-sourcepath`.) Test mencakup validasi input, update parsial, exception `EntityNotFoundException`, pencarian, pengurutan, dan perilaku entity immutable.
+
 ## Catatan Desain: Duplikasi `InMemoryRepository` dan `InputUtil`
 
 `InMemoryRepository` dan `InputUtil` juga ada dengan isi yang sama di studi kasus lain dalam repository ini. Hal ini **disengaja**, bukan kelalaian:

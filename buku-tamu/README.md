@@ -4,7 +4,7 @@ Aplikasi konsol Java untuk mencatat tamu yang berkunjung beserta tujuan kunjunga
 
 ## Fitur
 
-- Daftarkan tamu (validasi nama dan tujuan kunjungan; tamu dengan nama dan tujuan yang sama ditolak)
+- Daftarkan tamu (validasi nama dan tujuan kunjungan)
 - Cari tamu berdasarkan nama (case-insensitive)
 - Hapus tamu berdasarkan ID
 
@@ -62,6 +62,17 @@ src/
 javac -encoding UTF-8 -d output -sourcepath src src/App.java
 java -cp output App
 ```
+
+## Unit Test
+
+Test berada di `test/usecase/GuestUseCaseTest.java` (tanpa framework eksternal, cukup JDK). Dari folder studi kasus:
+
+```
+javac -encoding UTF-8 -d output -sourcepath "src;test" test/usecase/GuestUseCaseTest.java
+java -cp output usecase.GuestUseCaseTest
+```
+
+(Di Linux/macOS gunakan `src:test` pada `-sourcepath`.) Test mencakup validasi input, update parsial, exception `EntityNotFoundException`, pencarian, pengurutan, dan perilaku entity immutable.
 
 ## Catatan Desain: Duplikasi `InMemoryRepository` dan `InputUtil`
 

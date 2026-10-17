@@ -35,7 +35,6 @@ public class ItemUseCase {
         validateNotBlank(name, "Nama barang tidak boleh kosong!");
         validateQuantity(quantity);
         validateNotBlank(category, "Kategori barang tidak boleh kosong!");
-        validateNotDuplicate(name.trim(), category.trim());
         return itemRepository.save(name.trim(), quantity, category.trim());
     }
 
@@ -49,11 +48,12 @@ public class ItemUseCase {
                 .orElseThrow(() -> new EntityNotFoundException("Barang", id));
 
         // quantity null berarti stok tidak diubah (update parsial)
+        Item updated = item;
         if (quantity != null) {
             validateQuantity(quantity);
-            item.changeQuantity(quantity);
+            updated = item.withQuantity(quantity); // entity immutable: hasilnya objek baru
         }
-        itemRepository.update(item);
+        itemRepository.update(updated);
     }
 
 
@@ -78,16 +78,6 @@ public class ItemUseCase {
         return itemRepository.findAll().stream()
                 .sorted(option.comparator())
                 .toList();
-    }
-
-
-    /** Aturan validasi: barang dengan nama dan kategori yang sama (case-insensitive) tidak boleh ganda. */
-    private void validateNotDuplicate(String name, String category) throws ValidationException {
-        boolean exists = !itemRepository.findBy(item -> item.getName().equalsIgnoreCase(name)
-                && item.getCategory().equalsIgnoreCase(category)).isEmpty();
-        if (exists) {
-            throw new ValidationException("Barang dengan nama dan kategori yang sama sudah terdaftar!");
-        }
     }
 
 

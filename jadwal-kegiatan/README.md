@@ -4,7 +4,7 @@ Aplikasi konsol Java untuk mengelola jadwal kegiatan berdasarkan hari dan waktu.
 
 ## Fitur
 
-- Tambah kegiatan (judul, hari, waktu; tolak kegiatan ganda dengan judul, hari, dan waktu sama)
+- Tambah kegiatan (judul, hari, waktu)
 - Ubah kegiatan secara parsial (input kosong berarti tidak diubah, `x` membatalkan di setiap prompt)
 - Cari kegiatan berdasarkan judul (case-insensitive)
 - Urutkan: hari, waktu, judul A-Z/Z-A
@@ -55,6 +55,7 @@ src/
 - **Generic Abstraction & Reuse**: `IRepository<T, ID>` dan `InMemoryRepository<T, ID>` dipakai ulang oleh repository spesifik.
 - **Structured Domain Exceptions**: `DomainException` (checked), `EntityNotFoundException`, dan `ValidationException`; kegagalan bisnis tidak memakai boolean return code.
 - **Enum dengan comparator sendiri**: `SortOption` (`DAY`, `TIME`, `TITLE_ASC`, `TITLE_DESC`); tiap opsi membawa `Comparator`-nya.
+- **Entity immutable**: seluruh field `final`; perubahan data memakai method `with*` yang mengembalikan objek baru (bukan setter/`change*`).
 - **Use case tanpa I/O**: semua tampilan dan input ada di layer framework.
 - **Presenter terpisah**: format output bukan tanggung jawab entity (entity tidak punya `toString()`).
 - **Port & Adapter**: interface di `domain`, implementasi di `adapter`.
@@ -66,6 +67,17 @@ src/
 javac -encoding UTF-8 -d output -sourcepath src src/App.java
 java -cp output App
 ```
+
+## Unit Test
+
+Test berada di `test/usecase/ActivityUseCaseTest.java` (tanpa framework eksternal, cukup JDK). Dari folder studi kasus:
+
+```
+javac -encoding UTF-8 -d output -sourcepath "src;test" test/usecase/ActivityUseCaseTest.java
+java -cp output usecase.ActivityUseCaseTest
+```
+
+(Di Linux/macOS gunakan `src:test` pada `-sourcepath`.) Test mencakup validasi input, update parsial, exception `EntityNotFoundException`, pencarian, pengurutan, dan perilaku entity immutable.
 
 ## Catatan Desain: Duplikasi `InMemoryRepository` dan `InputUtil`
 

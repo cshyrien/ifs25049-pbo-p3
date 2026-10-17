@@ -2,25 +2,26 @@ package domain.entity;
 
 
 /**
- * Entity inti yang merepresentasikan satu barang pada inventaris.
+ * Entity inti yang merepresentasikan satu barang inventaris.
  * Berada di layer domain — tidak bergantung pada layer lain dan bebas dari
- * urusan tampilan maupun penyimpanan.
+ * urusan tampilan maupun penyimpanan. Bersifat immutable: seluruh field final,
+ * dan perubahan dilakukan lewat method with* yang mengembalikan objek baru.
  */
 public class Item {
-    /** ID unik barang, tidak boleh diubah setelah dibuat. */
+    /** ID unik, tidak berubah setelah dibuat. */
     private final int id;
 
 
     /** Nama barang. */
-    private String name;
+    private final String name;
 
 
     /** Jumlah stok barang. */
-    private int quantity;
+    private final int quantity;
 
 
     /** Kategori barang. */
-    private String category;
+    private final String category;
 
 
     public Item(int id, String name, int quantity, String category) {
@@ -51,20 +52,20 @@ public class Item {
     }
 
 
-    /** Mengubah nama barang. */
-    public void changeName(String name) {
-        this.name = name;
+    /** Mengembalikan salinan baru dengan nama barang yang diganti; objek ini tidak berubah. */
+    public Item withName(String newName) {
+        return new Item(id, newName, quantity, category);
     }
 
 
-    /** Mengubah jumlah stok barang. */
-    public void changeQuantity(int quantity) {
-        this.quantity = quantity;
+    /** Mengembalikan salinan baru dengan jumlah stok barang yang diganti; objek ini tidak berubah. */
+    public Item withQuantity(int newQuantity) {
+        return new Item(id, name, newQuantity, category);
     }
 
 
-    /** Mengubah kategori barang. */
-    public void changeCategory(String category) {
-        this.category = category;
+    /** Mengembalikan salinan baru dengan kategori barang yang diganti; objek ini tidak berubah. */
+    public Item withCategory(String newCategory) {
+        return new Item(id, name, quantity, newCategory);
     }
 }

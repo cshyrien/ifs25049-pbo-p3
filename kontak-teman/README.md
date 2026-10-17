@@ -4,8 +4,8 @@ Aplikasi konsol Java untuk menyimpan kontak teman (nama, telepon, email). Dibang
 
 ## Fitur
 
-- Tambah kontak (validasi nama, format telepon/email, dan tolak telepon/email yang sudah dipakai kontak lain)
-- Ubah kontak secara parsial (input kosong berarti tidak diubah, `x` membatalkan di setiap prompt; format dan duplikasi telepon/email tetap divalidasi)
+- Tambah kontak (validasi nama, format telepon/email)
+- Ubah kontak secara parsial (input kosong berarti tidak diubah, `x` membatalkan di setiap prompt; format telepon/email tetap divalidasi)
 - Cari kontak berdasarkan nama (case-insensitive)
 - Urutkan nama A-Z/Z-A
 - Hapus kontak berdasarkan ID
@@ -55,6 +55,7 @@ src/
 - **Generic Abstraction & Reuse**: `IRepository<T, ID>` dan `InMemoryRepository<T, ID>` dipakai ulang oleh repository spesifik.
 - **Structured Domain Exceptions**: `DomainException` (checked), `EntityNotFoundException`, dan `ValidationException`; kegagalan bisnis tidak memakai boolean return code.
 - **Enum dengan comparator sendiri**: `SortOption` (`NAME_ASC`, `NAME_DESC`); tiap opsi membawa `Comparator`-nya.
+- **Entity immutable**: seluruh field `final`; perubahan data memakai method `with*` yang mengembalikan objek baru (bukan setter/`change*`).
 - **Use case tanpa I/O**: semua tampilan dan input ada di layer framework.
 - **Presenter terpisah**: format output bukan tanggung jawab entity (entity tidak punya `toString()`).
 - **Port & Adapter**: interface di `domain`, implementasi di `adapter`.
@@ -66,6 +67,17 @@ src/
 javac -encoding UTF-8 -d output -sourcepath src src/App.java
 java -cp output App
 ```
+
+## Unit Test
+
+Test berada di `test/usecase/ContactUseCaseTest.java` (tanpa framework eksternal, cukup JDK). Dari folder studi kasus:
+
+```
+javac -encoding UTF-8 -d output -sourcepath "src;test" test/usecase/ContactUseCaseTest.java
+java -cp output usecase.ContactUseCaseTest
+```
+
+(Di Linux/macOS gunakan `src:test` pada `-sourcepath`.) Test mencakup validasi input, update parsial, exception `EntityNotFoundException`, pencarian, pengurutan, dan perilaku entity immutable.
 
 ## Catatan Desain: Duplikasi `InMemoryRepository` dan `InputUtil`
 
