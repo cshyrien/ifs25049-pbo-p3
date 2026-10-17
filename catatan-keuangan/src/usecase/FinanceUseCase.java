@@ -34,9 +34,7 @@ public class FinanceUseCase {
     /** Menambahkan transaksi baru setelah validasi keterangan, jumlah, dan tipe. */
     public Transaction addTransaction(String description, long amount, TransactionType type)
             throws ValidationException {
-        if (description == null || description.trim().isEmpty()) {
-            throw new ValidationException("Keterangan tidak boleh kosong!");
-        }
+        validateNotBlank(description, "Keterangan tidak boleh kosong!");
         if (amount <= 0) {
             throw new ValidationException("Jumlah tidak valid!");
         }
@@ -83,5 +81,12 @@ public class FinanceUseCase {
             }
         }
         return balance;
+    }
+
+    /** Aturan validasi: teks tidak boleh null atau kosong. */
+    private void validateNotBlank(String value, String message) throws ValidationException {
+        if (value == null || value.trim().isEmpty()) {
+            throw new ValidationException(message);
+        }
     }
 }

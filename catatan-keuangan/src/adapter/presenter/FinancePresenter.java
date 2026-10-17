@@ -52,6 +52,7 @@ public class FinancePresenter {
     }
 
 
+    /** Menampilkan daftar transaksi yang sudah diurutkan. */
     public void showSortedTransactions(List<Transaction> transactions) {
         printList(transactions, "Daftar Transaksi (Terurut):", "- Belum ada transaksi!");
     }

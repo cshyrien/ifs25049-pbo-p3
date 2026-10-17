@@ -45,7 +45,7 @@ public class ContactView {
                 case "3" -> searchContact();
                 case "4" -> sortContact();
                 case "5" -> removeContact();
-                case "x" -> running = false;
+                case InputUtil.CANCEL_KEY -> running = false;
                 default -> presenter.showInvalidChoice();
             }
 
@@ -72,17 +72,17 @@ public class ContactView {
     private void addContact() {
         System.out.println("[Menambah Kontak]");
         String name = InputUtil.input("Nama (x Jika Batal)");
-        if (name.trim().equals("x")) {
+        if (InputUtil.isCancel(name)) {
             return;
         }
 
         String phone = InputUtil.input("Telepon");
-        if (phone.trim().equals("x")) {
+        if (InputUtil.isCancel(phone)) {
             return;
         }
 
         String email = InputUtil.input("Email");
-        if (email.trim().equals("x")) {
+        if (InputUtil.isCancel(email)) {
             return;
         }
 
@@ -98,7 +98,7 @@ public class ContactView {
     private void updateContact() {
         System.out.println("[Mengubah Kontak]");
         String strId = InputUtil.input("ID Kontak yang diubah (x Jika Batal)");
-        if (strId.trim().equals("x")) {
+        if (InputUtil.isCancel(strId)) {
             return;
         }
 
@@ -135,7 +135,7 @@ public class ContactView {
         System.out.println("[Mencari Kontak]");
         String keyword = InputUtil.input("Kata Kunci (x Jika Batal)");
 
-        if (!keyword.trim().equals("x")) {
+        if (!InputUtil.isCancel(keyword)) {
             presenter.showSearchResults(contactUseCase.searchContacts(keyword), keyword);
         }
     }
@@ -151,7 +151,7 @@ public class ContactView {
 
         String input = InputUtil.input("Pilih").trim();
         System.out.println();
-        if (input.equals("x")) {
+        if (InputUtil.isCancel(input)) {
             return;
         }
 
@@ -171,7 +171,7 @@ public class ContactView {
         System.out.println("[Menghapus Kontak]");
         String strId = InputUtil.input("[ID Kontak] yang dihapus (x Jika Batal)");
 
-        if (strId.trim().equals("x")) {
+        if (InputUtil.isCancel(strId)) {
             return;
         }
 
@@ -193,11 +193,7 @@ public class ContactView {
      * @throws ValidationException jika string bukan format angka
      */
     private int parseId(String value) throws ValidationException {
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
-            throw new ValidationException("ID tidak valid!");
-        }
+        return InputUtil.parseInt(value, "ID tidak valid!");
     }
 
 

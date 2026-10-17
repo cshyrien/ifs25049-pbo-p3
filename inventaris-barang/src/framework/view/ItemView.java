@@ -45,7 +45,7 @@ public class ItemView {
                 case "3" -> searchItem();
                 case "4" -> sortItem();
                 case "5" -> removeItem();
-                case "x" -> running = false;
+                case InputUtil.CANCEL_KEY -> running = false;
                 default -> presenter.showInvalidChoice();
             }
 
@@ -72,12 +72,12 @@ public class ItemView {
     private void addItem() {
         System.out.println("[Menambah Barang]");
         String name = InputUtil.input("Nama (x Jika Batal)");
-        if (name.trim().equals("x")) {
+        if (InputUtil.isCancel(name)) {
             return;
         }
 
         String strQuantity = InputUtil.input("Jumlah");
-        if (strQuantity.trim().equals("x")) {
+        if (InputUtil.isCancel(strQuantity)) {
             return;
         }
 
@@ -90,7 +90,7 @@ public class ItemView {
         }
 
         String category = InputUtil.input("Kategori (x Jika Batal)");
-        if (category.trim().equals("x")) {
+        if (InputUtil.isCancel(category)) {
             return;
         }
 
@@ -106,7 +106,7 @@ public class ItemView {
     private void updateStock() {
         System.out.println("[Mengubah Stok]");
         String strId = InputUtil.input("ID Barang yang diubah (x Jika Batal)");
-        if (strId.trim().equals("x")) {
+        if (InputUtil.isCancel(strId)) {
             return;
         }
 
@@ -119,7 +119,7 @@ public class ItemView {
         }
 
         String strQuantity = InputUtil.input("Jumlah Baru (Kosongkan jika tidak ingin mengubah)");
-        if (strQuantity.trim().equals("x")) {
+        if (InputUtil.isCancel(strQuantity)) {
             return;
         }
 
@@ -141,7 +141,7 @@ public class ItemView {
         System.out.println("[Mencari Barang]");
         String keyword = InputUtil.input("Kata Kunci (x Jika Batal)");
 
-        if (!keyword.trim().equals("x")) {
+        if (!InputUtil.isCancel(keyword)) {
             presenter.showSearchResults(itemUseCase.searchItems(keyword), keyword);
         }
     }
@@ -159,7 +159,7 @@ public class ItemView {
 
         String input = InputUtil.input("Pilih").trim();
         System.out.println();
-        if (input.equals("x")) {
+        if (InputUtil.isCancel(input)) {
             return;
         }
 
@@ -179,7 +179,7 @@ public class ItemView {
         System.out.println("[Menghapus Barang]");
         String strId = InputUtil.input("[ID Barang] yang dihapus (x Jika Batal)");
 
-        if (strId.trim().equals("x")) {
+        if (InputUtil.isCancel(strId)) {
             return;
         }
 
@@ -201,11 +201,7 @@ public class ItemView {
      * @throws ValidationException jika string bukan format angka
      */
     private int parseId(String value) throws ValidationException {
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
-            throw new ValidationException("ID tidak valid!");
-        }
+        return InputUtil.parseInt(value, "ID tidak valid!");
     }
 
 
@@ -215,11 +211,7 @@ public class ItemView {
      * @throws ValidationException jika string bukan format angka
      */
     private int parseQuantity(String value) throws ValidationException {
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
-            throw new ValidationException("Jumlah stok tidak valid!");
-        }
+        return InputUtil.parseInt(value, "Jumlah stok tidak valid!");
     }
 
 

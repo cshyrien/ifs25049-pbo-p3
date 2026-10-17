@@ -32,17 +32,17 @@ public class ItemUseCase {
 
     /** Menambahkan barang baru setelah validasi nama, stok, dan kategori. */
     public Item addItem(String name, int quantity, String category) throws ValidationException {
-        if (name == null || name.trim().isEmpty()) {
-            throw new ValidationException("Nama barang tidak boleh kosong!");
-        }
+        validateNotBlank(name, "Nama barang tidak boleh kosong!");
         validateQuantity(quantity);
-        if (category == null || category.trim().isEmpty()) {
-            throw new ValidationException("Kategori barang tidak boleh kosong!");
-        }
+        validateNotBlank(category, "Kategori barang tidak boleh kosong!");
         return itemRepository.save(name.trim(), quantity, category.trim());
     }
 
 
+    /**
+     * Mengubah stok barang (update parsial: stok null berarti tidak diubah).
+     * Melempar exception jika ID tidak ditemukan atau stok tidak valid.
+     */
     public void updateStock(int id, Integer quantity) throws EntityNotFoundException, ValidationException {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Barang", id));
@@ -84,6 +84,13 @@ public class ItemUseCase {
     private void validateQuantity(int quantity) throws ValidationException {
         if (quantity <= 0) {
             throw new ValidationException("Jumlah stok tidak valid!");
+        }
+    }
+
+    /** Aturan validasi: teks tidak boleh null atau kosong. */
+    private void validateNotBlank(String value, String message) throws ValidationException {
+        if (value == null || value.trim().isEmpty()) {
+            throw new ValidationException(message);
         }
     }
 }

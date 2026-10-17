@@ -6,6 +6,9 @@ package domain.exception;
  * Semua kegagalan bisnis (validasi, data tidak ditemukan) diturunkan dari sini.
  */
 public class DomainException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+
     public DomainException(String message) {
         super(message);
     }

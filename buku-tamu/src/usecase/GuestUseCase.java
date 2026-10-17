@@ -31,12 +31,8 @@ public class GuestUseCase {
 
     /** Mendaftarkan tamu baru setelah validasi nama dan tujuan kunjungan. */
     public Guest registerGuest(String name, String purpose) throws ValidationException {
-        if (name == null || name.trim().isEmpty()) {
-            throw new ValidationException("Nama tamu tidak boleh kosong!");
-        }
-        if (purpose == null || purpose.trim().isEmpty()) {
-            throw new ValidationException("Tujuan kunjungan tidak boleh kosong!");
-        }
+        validateNotBlank(name, "Nama tamu tidak boleh kosong!");
+        validateNotBlank(purpose, "Tujuan kunjungan tidak boleh kosong!");
         return guestRepository.save(name.trim(), purpose.trim());
     }
 
@@ -53,6 +49,13 @@ public class GuestUseCase {
         boolean deleted = guestRepository.deleteById(id);
         if (!deleted) {
             throw new EntityNotFoundException("Tamu", id);
+        }
+    }
+
+    /** Aturan validasi: teks tidak boleh null atau kosong. */
+    private void validateNotBlank(String value, String message) throws ValidationException {
+        if (value == null || value.trim().isEmpty()) {
+            throw new ValidationException(message);
         }
     }
 }

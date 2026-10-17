@@ -45,7 +45,7 @@ public class ActivityView {
                 case "3" -> searchActivity();
                 case "4" -> sortActivity();
                 case "5" -> removeActivity();
-                case "x" -> running = false;
+                case InputUtil.CANCEL_KEY -> running = false;
                 default -> presenter.showInvalidChoice();
             }
 
@@ -72,17 +72,17 @@ public class ActivityView {
     private void addActivity() {
         System.out.println("[Menambah Kegiatan]");
         String title = InputUtil.input("Judul (x Jika Batal)");
-        if (title.trim().equals("x")) {
+        if (InputUtil.isCancel(title)) {
             return;
         }
 
         String day = InputUtil.input("Hari (x Jika Batal)");
-        if (day.trim().equals("x")) {
+        if (InputUtil.isCancel(day)) {
             return;
         }
 
         String time = InputUtil.input("Waktu (x Jika Batal)");
-        if (time.trim().equals("x")) {
+        if (InputUtil.isCancel(time)) {
             return;
         }
 
@@ -98,7 +98,7 @@ public class ActivityView {
     private void updateActivity() {
         System.out.println("[Mengubah Kegiatan]");
         String strId = InputUtil.input("ID Kegiatan yang diubah (x Jika Batal)");
-        if (strId.trim().equals("x")) {
+        if (InputUtil.isCancel(strId)) {
             return;
         }
 
@@ -135,7 +135,7 @@ public class ActivityView {
         System.out.println("[Mencari Kegiatan]");
         String keyword = InputUtil.input("Kata Kunci (x Jika Batal)");
 
-        if (!keyword.trim().equals("x")) {
+        if (!InputUtil.isCancel(keyword)) {
             presenter.showSearchResults(activityUseCase.searchActivities(keyword), keyword);
         }
     }
@@ -153,7 +153,7 @@ public class ActivityView {
 
         String input = InputUtil.input("Pilih").trim();
         System.out.println();
-        if (input.equals("x")) {
+        if (InputUtil.isCancel(input)) {
             return;
         }
 
@@ -173,7 +173,7 @@ public class ActivityView {
         System.out.println("[Menghapus Kegiatan]");
         String strId = InputUtil.input("[ID Kegiatan] yang dihapus (x Jika Batal)");
 
-        if (strId.trim().equals("x")) {
+        if (InputUtil.isCancel(strId)) {
             return;
         }
 
@@ -195,11 +195,7 @@ public class ActivityView {
      * @throws ValidationException jika string bukan format angka
      */
     private int parseId(String value) throws ValidationException {
-        try {
-            return Integer.parseInt(value.trim());
-        } catch (NumberFormatException e) {
-            throw new ValidationException("ID tidak valid!");
-        }
+        return InputUtil.parseInt(value, "ID tidak valid!");
     }
 
 
