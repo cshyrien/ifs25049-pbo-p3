@@ -110,9 +110,20 @@ public class ContactView {
             return;
         }
 
-        String newName = InputUtil.input("Nama Baru (Kosongkan jika tidak ingin mengubah)");
-        String newPhone = InputUtil.input("Telepon Baru (Kosongkan jika tidak ingin mengubah)");
-        String newEmail = InputUtil.input("Email Baru (Kosongkan jika tidak ingin mengubah)");
+        String newName = InputUtil.input("Nama Baru (Kosongkan jika tidak ingin mengubah, x Jika Batal)");
+        if (InputUtil.isCancel(newName)) {
+            return;
+        }
+
+        String newPhone = InputUtil.input("Telepon Baru (Kosongkan jika tidak ingin mengubah, x Jika Batal)");
+        if (InputUtil.isCancel(newPhone)) {
+            return;
+        }
+
+        String newEmail = InputUtil.input("Email Baru (Kosongkan jika tidak ingin mengubah, x Jika Batal)");
+        if (InputUtil.isCancel(newEmail)) {
+            return;
+        }
 
         // null berarti field tersebut tidak diubah
         String name = newName.isBlank() ? null : newName;

@@ -110,9 +110,20 @@ public class ActivityView {
             return;
         }
 
-        String newTitle = InputUtil.input("Judul Baru (Kosongkan jika tidak ingin mengubah)");
-        String newDay = InputUtil.input("Hari Baru (Kosongkan jika tidak ingin mengubah)");
-        String newTime = InputUtil.input("Waktu Baru (Kosongkan jika tidak ingin mengubah)");
+        String newTitle = InputUtil.input("Judul Baru (Kosongkan jika tidak ingin mengubah, x Jika Batal)");
+        if (InputUtil.isCancel(newTitle)) {
+            return;
+        }
+
+        String newDay = InputUtil.input("Hari Baru (Kosongkan jika tidak ingin mengubah, x Jika Batal)");
+        if (InputUtil.isCancel(newDay)) {
+            return;
+        }
+
+        String newTime = InputUtil.input("Waktu Baru (Kosongkan jika tidak ingin mengubah, x Jika Batal)");
+        if (InputUtil.isCancel(newTime)) {
+            return;
+        }
 
         // null berarti field tersebut tidak diubah
         String title = newTitle.isBlank() ? null : newTitle;

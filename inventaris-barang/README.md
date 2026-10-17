@@ -4,8 +4,8 @@ Aplikasi konsol Java untuk mengelola daftar barang, stok, dan kategorinya. Diban
 
 ## Fitur
 
-- Tambah barang (validasi nama, stok > 0, kategori)
-- Ubah stok barang (input kosong berarti stok tidak diubah)
+- Tambah barang (validasi nama, stok > 0, kategori; tolak nama+kategori yang sudah ada)
+- Ubah stok barang (input kosong berarti stok tidak diubah, `x` membatalkan)
 - Cari barang berdasarkan nama (case-insensitive)
 - Urutkan: nama A-Z/Z-A, jumlah terkecil/terbesar
 - Hapus barang berdasarkan ID

@@ -44,6 +44,9 @@ public class ContactUseCase {
         validateNotBlank(name, "Nama kontak tidak boleh kosong!");
         validateNotBlank(phone, "Nomor telepon tidak boleh kosong!");
         validateNotBlank(email, "Email tidak boleh kosong!");
+        validatePhone(phone);
+        validateEmail(email);
+        validateNotDuplicate(null, phone.trim(), email.trim());
         return contactRepository.save(name.trim(), phone.trim(), email.trim());
     }
 
@@ -67,6 +70,17 @@ public class ContactUseCase {
         if (email != null) {
             validateNotBlank(email, "Email tidak boleh kosong!");
         }
+        if (phone != null) {
+            validatePhone(phone);
+        }
+        if (email != null) {
+            validateEmail(email);
+        }
+        // Cek duplikasi terhadap kontak lain berdasarkan nilai telepon/email akhir
+        validateNotDuplicate(id,
+                phone != null ? phone.trim() : contact.getPhone(),
+                email != null ? email.trim() : contact.getEmail());
+
         if (name != null) {
             contact.changeName(name.trim());
         }
@@ -118,6 +132,31 @@ public class ContactUseCase {
         if (!EMAIL_PATTERN.matcher(email.trim()).matches()) {
             throw new ValidationException("Format email tidak valid!");
         }
+    }
+
+
+    /**
+     * Aturan validasi: telepon dan email tidak boleh sama dengan kontak lain.
+     *
+     * @param ownId ID kontak yang sedang diubah (dikecualikan dari pengecekan), atau null saat menambah
+     */
+    private void validateNotDuplicate(Integer ownId, String phone, String email) throws ValidationException {
+        boolean phoneUsed = !contactRepository.findBy(
+                c -> isOtherContact(c, ownId) && c.getPhone().equals(phone)).isEmpty();
+        if (phoneUsed) {
+            throw new ValidationException("Nomor telepon sudah digunakan kontak lain!");
+        }
+        boolean emailUsed = !contactRepository.findBy(
+                c -> isOtherContact(c, ownId) && c.getEmail().equalsIgnoreCase(email)).isEmpty();
+        if (emailUsed) {
+            throw new ValidationException("Email sudah digunakan kontak lain!");
+        }
+    }
+
+
+    /** Kontak dianggap "lain" jika bukan kontak yang sedang diubah (ownId null = tambah baru). */
+    private boolean isOtherContact(Contact contact, Integer ownId) {
+        return ownId == null || contact.getId() != ownId;
     }
 
 

@@ -4,8 +4,8 @@ Aplikasi konsol Java untuk mengelola jadwal kegiatan berdasarkan hari dan waktu.
 
 ## Fitur
 
-- Tambah kegiatan (judul, hari, waktu)
-- Ubah kegiatan secara parsial (input kosong berarti tidak diubah)
+- Tambah kegiatan (judul, hari, waktu; tolak kegiatan ganda dengan judul, hari, dan waktu sama)
+- Ubah kegiatan secara parsial (input kosong berarti tidak diubah, `x` membatalkan di setiap prompt)
 - Cari kegiatan berdasarkan judul (case-insensitive)
 - Urutkan: hari, waktu, judul A-Z/Z-A
 - Hapus kegiatan berdasarkan ID

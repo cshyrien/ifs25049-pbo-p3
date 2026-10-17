@@ -118,7 +118,7 @@ public class ItemView {
             return;
         }
 
-        String strQuantity = InputUtil.input("Jumlah Baru (Kosongkan jika tidak ingin mengubah)");
+        String strQuantity = InputUtil.input("Jumlah Baru (Kosongkan jika tidak ingin mengubah, x Jika Batal)");
         if (InputUtil.isCancel(strQuantity)) {
             return;
         }

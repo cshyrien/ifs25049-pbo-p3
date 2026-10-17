@@ -4,8 +4,8 @@ Aplikasi konsol Java untuk menyimpan kontak teman (nama, telepon, email). Dibang
 
 ## Fitur
 
-- Tambah kontak (validasi nama serta format telepon dan email)
-- Ubah kontak secara parsial (input kosong berarti tidak diubah; format telepon/email tetap divalidasi)
+- Tambah kontak (validasi nama, format telepon/email, dan tolak telepon/email yang sudah dipakai kontak lain)
+- Ubah kontak secara parsial (input kosong berarti tidak diubah, `x` membatalkan di setiap prompt; format dan duplikasi telepon/email tetap divalidasi)
 - Cari kontak berdasarkan nama (case-insensitive)
 - Urutkan nama A-Z/Z-A
 - Hapus kontak berdasarkan ID
